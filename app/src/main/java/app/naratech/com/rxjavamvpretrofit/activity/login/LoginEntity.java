@@ -13,7 +13,7 @@ public class LoginEntity {
      */
 
     private int status;
-    private String messsage;
+    private String message;
     private String result;
 
     public int getStatus() {
@@ -24,12 +24,12 @@ public class LoginEntity {
         this.status = status;
     }
 
-    public String getMesssage() {
-        return messsage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMesssage(String messsage) {
-        this.messsage = messsage;
+    public void setMessage(String messsage) {
+        this.message = messsage;
     }
 
     public String getResult() {

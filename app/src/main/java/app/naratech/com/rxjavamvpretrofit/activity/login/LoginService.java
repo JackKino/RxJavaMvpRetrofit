@@ -1,5 +1,9 @@
 package app.naratech.com.rxjavamvpretrofit.activity.login;
 
+import android.util.Log;
+
+import com.jaydenxiao.common.commonutils.LogUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,9 +34,13 @@ public class LoginService {
         call.enqueue(new retrofit2.Callback<LoginEntity>() {
             @Override
             public void onResponse(Call<LoginEntity> call, retrofit2.Response<LoginEntity> response) {
-                LoginEntity data = response.body();
-
-                cbk.onRequestSucess(data);
+               LoginEntity data = response.body();
+                if(data.getMessage()!=null) {
+                    Log.i("header", "key=" + data.getMessage());
+                }else{
+                    Log.i("header", "key=    null" );
+                }
+               // cbk.onRequestSucess(data);
             }
 
             @Override

@@ -1,5 +1,7 @@
 package app.naratech.com.rxjavamvpretrofit.activity.login;
 
+import com.jaydenxiao.common.commonutils.LogUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,10 +28,11 @@ public class LoginPresenter extends LoginContract.Presenter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        ApiService loginService=Api.getMovieService("http://192.168.1.109:12345/",headers);
+        ApiService loginService=Api.getMovieService("http://120.27.13.87:8080/",headers);
         LoginService.login(loginService, new RequestCallback<LoginEntity>() {
             @Override
             public void onRequestSucess(LoginEntity result) {
+                LogUtils.logi("header","key="+result.getResult()+"   value="+result.getMessage());
                      mView.returnOneNewsData(result);
             }
 

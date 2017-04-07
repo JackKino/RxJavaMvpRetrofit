@@ -8,6 +8,7 @@ import android.util.SparseArray;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jaydenxiao.common.baseapp.BaseApplication;
+import com.jaydenxiao.common.commonutils.LogUtils;
 import com.jaydenxiao.common.commonutils.NetWorkUtils;
 
 import org.json.JSONException;
@@ -109,6 +110,7 @@ public class Api {
                     return chain.proceed(build);
                 }
             };
+            LogUtils.logi("header","key="+key+"   value="+value);
         } else {
              headerInterceptor = new Interceptor() {
                 @Override
