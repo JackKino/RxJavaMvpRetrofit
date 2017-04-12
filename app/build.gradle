@@ -34,4 +34,5 @@ dependencies {
     compile project(':selectordialog')
     compile project(':UserGuide')
     compile project(':zxingScan')
+    compile 'com.jude:rollviewpager:1.2.9'
 }

@@ -10,6 +10,8 @@ import app.naratech.com.rxjavamvpretrofit.activity.login.LoginEntity;
 import app.naratech.com.rxjavamvpretrofit.activity.login.LoginModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -24,9 +26,12 @@ import rx.Observable;
  * on 2016.06.15:47
  */
 public interface ApiService {
-
+    public  final static  String BASEURL="http://120.27.13.87:8080/";
+    /*@POST("api/login")
+    Call<LoginEntity> login();*/
     @POST("api/login")
-    Call<LoginEntity> login();
+    Observable<Response<LoginEntity>> login(@Header("Authorization") String header);
+
 
 
 }

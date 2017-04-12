@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import app.naratech.com.rxjavamvpretrofit.MyApplication;
 import okhttp3.Cache;
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -41,7 +42,8 @@ public class Api {
     public static final int CONNECT_TIME_OUT = 7676;
     public static Retrofit retrofit;
     public static ApiService movieService;
-    public static String key,value;
+
+    public static Api instance;
 
     private static SparseArray<Api> sRetrofitManager = new SparseArray<>(HostType.TYPE_COUNT);
 
@@ -82,18 +84,18 @@ public class Api {
 
 
     //构造方法私有
-    public static ApiService getMovieService(String baseUrl, JSONObject headers) {
+    public Api() {
 
 
         //开启Log
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         //缓存
-        File cacheFile = new File(BaseApplication.getAppContext().getCacheDir(), "cache");
+        File cacheFile = new File(MyApplication.getAppContext().getCacheDir(), "cache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); //100Mb
 //增加头部信息
         Interceptor headerInterceptor;
-        if (headers != null) {
+        /*if (headers != null) {
             try {
                  key=headers.getString("key");
                  value=headers.getString("value");
@@ -105,13 +107,12 @@ public class Api {
                 public Response intercept(Chain chain) throws IOException {
                     Request build = chain.request().newBuilder()
                             .addHeader("Content-Type","application/json")
-                            .header(key,value)
                             .build();
                     return chain.proceed(build);
                 }
             };
             LogUtils.logi("header","key="+key+"   value="+value);
-        } else {
+        } else {*/
              headerInterceptor = new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
@@ -121,7 +122,7 @@ public class Api {
                     return chain.proceed(build);
                 }
             };
-        }
+       // }
 
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -140,17 +141,14 @@ public class Api {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(baseUrl)
+                .baseUrl(ApiService.BASEURL)
                 .build();
         movieService = retrofit.create(ApiService.class);
-        return movieService;
+
     }
 
 
-    /**
-     * @param hostType NETEASE_NEWS_VIDEO：1 （新闻，视频），GANK_GIRL_PHOTO：2（图片新闻）;
-     *                 EWS_DETAIL_HTML_PHOTO:3新闻详情html图片)
-     */
+
    /* public static ApiService getLogin() {
         Api retrofitManager = new Api();
         if (retrofitManager == null) {
@@ -160,13 +158,33 @@ public class Api {
         return retrofitManager.movieService;
     }*/
 
+    public static Api getInstance() {
+        if (instance == null) {
+            synchronized (Api.class) {
+                if (instance == null) {
+                    instance = new Api();
+                }
+            }
+        }
+        return instance;
+    }
 
+    public Retrofit getRetrofit() {
+        if (retrofit == null) {
+            retrofit = Api.getInstance().initRetrofit();
+        }
+        return retrofit;
+    }
+
+    private Retrofit initRetrofit() {
+        return retrofit;
+    }
     /**
      * 根据网络状况获取缓存的策略
      */
     @NonNull
     public static String getCacheControl() {
-        return NetWorkUtils.isNetConnected(BaseApplication.getAppContext()) ? CACHE_CONTROL_AGE : CACHE_CONTROL_CACHE;
+        return NetWorkUtils.isNetConnected(MyApplication.getAppContext()) ? CACHE_CONTROL_AGE : CACHE_CONTROL_CACHE;
     }
 
     /**
@@ -178,13 +196,13 @@ public class Api {
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
             String cacheControl = request.cacheControl().toString();
-            if (!NetWorkUtils.isNetConnected(BaseApplication.getAppContext())) {
+            if (!NetWorkUtils.isNetConnected(MyApplication.getAppContext())) {
                 request = request.newBuilder()
                         .cacheControl(TextUtils.isEmpty(cacheControl) ? CacheControl.FORCE_NETWORK : CacheControl.FORCE_CACHE)
                         .build();
             }
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtils.isNetConnected(BaseApplication.getAppContext())) {
+            if (NetWorkUtils.isNetConnected(MyApplication.getAppContext())) {
                 //有网的时候读接口上的@Headers里的配置，你可以在这里进行统一的设置
 
                 return originalResponse.newBuilder()

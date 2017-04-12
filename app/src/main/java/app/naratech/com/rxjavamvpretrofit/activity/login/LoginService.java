@@ -23,24 +23,18 @@ public class LoginService {
 
     /**
      * 登录
-     *
-
      */
-    public static void login(ApiService loginservice,final RequestCallback<LoginEntity> cbk) {
+    public static void login(ApiService loginservice, final RequestCallback<LoginEntity> cbk) {
 
-
+/*
         Call<LoginEntity> call = loginservice.login();
 
         call.enqueue(new retrofit2.Callback<LoginEntity>() {
             @Override
             public void onResponse(Call<LoginEntity> call, retrofit2.Response<LoginEntity> response) {
                LoginEntity data = response.body();
-                if(data.getMessage()!=null) {
-                    Log.i("header", "key=" + data.getMessage());
-                }else{
-                    Log.i("header", "key=    null" );
-                }
-               // cbk.onRequestSucess(data);
+
+                cbk.onRequestSucess(data);
             }
 
             @Override
@@ -48,5 +42,6 @@ public class LoginService {
                 cbk.onRequestFailed(t.getMessage());
             }
         });
+    }*/
     }
 }

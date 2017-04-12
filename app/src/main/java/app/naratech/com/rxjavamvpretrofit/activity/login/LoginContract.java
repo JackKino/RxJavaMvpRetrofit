@@ -20,6 +20,7 @@ public class LoginContract {
     interface View extends BaseView {
         //返回获取的新闻
         void returnOneNewsData(LoginEntity LoginEntity);
+        void returnErrorMsg(String msg);
     }
     abstract static class Presenter extends BasePresenter<View, Model> {
         //发起获取单条新闻请求

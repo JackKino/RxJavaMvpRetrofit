@@ -33,11 +33,16 @@ import android.widget.Toast;
 
 import com.jaydenxiao.common.base.BaseActivity;
 import com.jaydenxiao.common.commonutils.LogUtils;
+import com.jaydenxiao.common.commonutils.ToastUitl;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import app.naratech.com.rxjavamvpretrofit.MainActivity;
+import app.naratech.com.rxjavamvpretrofit.MyApplication;
 import app.naratech.com.rxjavamvpretrofit.R;
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -69,13 +74,14 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
 
     @OnClick(value = {R.id.btn})
     void loginclick() {
+        phone = phones.getText().toString();
+        pwd = pwds.getText().toString();
         mPresenter.getOneNewsDataRequest(phone, pwd);
     }
 
     @Override
     public void initView() {
-        phone = phones.getText().toString();
-        pwd = pwds.getText().toString();
+
 
 
     }
@@ -98,13 +104,31 @@ public class LoginActivity extends BaseActivity<LoginPresenter, LoginModel> impl
 
     @Override
     public void returnOneNewsData(LoginEntity loginModel) {
-        LogUtils.logi("login",loginModel.toString());
+
         int status = loginModel.getStatus();
         if (status == 2000) {
             Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
         }
         startActivity(MainActivity.class);
+        this.finish();
         Log.i("login", "success");
+    }
+
+    @Override
+    public void returnErrorMsg(String msg) {
+        try {
+            JSONObject js=new JSONObject(msg);
+            int status=js.getInt("status");
+            String message=js.getString("message");
+            if(status==401){
+               // ToastUitl.show( "用户名或密码不正确", 2000);
+                ToastUitl.showToastWithImg("用户名或密码不正确", R.mipmap.ic_launcher);
+            }else{
+                ToastUitl.show(message,2000);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
